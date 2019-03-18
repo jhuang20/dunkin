@@ -7,8 +7,18 @@ from matrix import *
   # height and depth dimensions.
   # ====================
 def add_box( points, x, y, z, width, height, depth ):
-    pass
-
+	add_edge(points,x,y,z,x,y,z-depth)
+	add_edge(points,x,y,z,x,y-height,z)
+	add_edge(points,x,y,z,x+width,y,z)
+	add_edge(points,x,y-height,z,x+width,y-height,z)
+	add_edge(points,x,y-height,z,x,y-height,z-depth)
+	add_edge(points,x+width,y-height,z,x+width,y-height,z-depth)
+	add_edge(points,x+width,y-height,z,x+width,y,z)
+	add_edge(points,x+width,y,z,x+width,y,z-depth)
+	add_edge(points,x,y-height,z-depth,x,y,z-depth)
+	add_edge(points,x,y-height,z-depth,x+width,y-height,z-depth)
+	add_edge(points,x+width,y-height,z-depth,x+width,y,z-depth)
+	add_edge(points,x+width,y,z-depth,x,y,z-depth)
   # ====================
   # Generates all the points along the surface
   # of a sphere with center (cx, cy, cz) and
@@ -16,7 +26,19 @@ def add_box( points, x, y, z, width, height, depth ):
   # Returns a matrix of those points
   # ====================
 def generate_sphere( points, cx, cy, cz, r, step ):
-    pass
+	generate_matrix=[]
+	theta=0
+	while theta/360.0<2*MATH.pi:
+		phi=0
+		while phi<2*MATH.pi:
+			rot=[[1,0,0],[0,cos(phi),sin(phi)],[0,-sin(phi),cos(phi)]]
+			gen=[[r*cos(theta),r*sin(theta),0]]
+			matrix_mult(rot,gen)
+			phi+=step
+		theta+=step
+
+
+	return generate_matrix
 
   # ====================
   # adds all the points for a sphere with center 
