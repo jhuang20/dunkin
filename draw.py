@@ -1,9 +1,9 @@
 from display import *
 from matrix import *
-
+import math
   # ====================
-  # add the points for a rectagular prism whose 
-  # upper-left corner is (x, y, z) with width, 
+  # add the points for a rectagular prism whose
+  # upper-left corner is (x, y, z) with width,
   # height and depth dimensions.
   # ====================
 def add_box( points, x, y, z, width, height, depth ):
@@ -26,28 +26,37 @@ def add_box( points, x, y, z, width, height, depth ):
   # Returns a matrix of those points
   # ====================
 def generate_sphere( points, cx, cy, cz, r, step ):
-	generate_matrix=[]
-	theta=0
-	while theta/360.0<2*MATH.pi:
-		phi=0
-		while phi<2*MATH.pi:
-			rot=[[1,0,0],[0,cos(phi),sin(phi)],[0,-sin(phi),cos(phi)]]
-			gen=[[r*cos(theta),r*sin(theta),0]]
-			matrix_mult(rot,gen)
-			phi+=step
-		theta+=step
+	lines=[]
+	for i in points:
+		add_edge(lines,i[0],i[1],i[2],i[0]+1,i[1]+1,i[2]+1)
 
-
-	return generate_matrix
+	return lines
 
   # ====================
-  # adds all the points for a sphere with center 
+  # adds all the points for a sphere with center
   # (cx, cy, cz) and radius r to points
   # should call generate_sphere to create the
   # necessary points
   # ====================
 def add_sphere( points, cx, cy, cz, r, step ):
-    pass
+	generate_matrix=[]
+	theta=0
+	while theta<math.pi:
+		phi=0
+		while phi<2*math.pi:
+			gen=[[r*math.cos(theta),r*math.sin(theta)*math.cos(phi),r*math.sin(theta)*math.sin(phi)]]
+			gen[0][0]+=cx
+			gen[0][1]+=cy
+			gen[0][1]+=cz
+			x=gen[0][0]
+			y=gen[0][1]
+			z=gen[0][2]
+			add_point(generate_matrix,x,y,z,)
+			phi+=2*math.pi*step
+		theta+=2*math.pi*step
+	#add sets of points
+	for i in generate_sphere(generate_matrix,cx,cy,cz,r,step):
+		add_point(points,i[0],i[1],i[2])
 
 
   # ====================
@@ -106,7 +115,7 @@ def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
 
 def draw_lines( matrix, screen, color ):
     if len(matrix) < 2:
-        print 'Need at least 2 points to draw'
+        print ('Need at least 2 points to draw')
         return
 
     point = 0
@@ -115,16 +124,16 @@ def draw_lines( matrix, screen, color ):
                    int(matrix[point][1]),
                    int(matrix[point+1][0]),
                    int(matrix[point+1][1]),
-                   screen, color)    
+                   screen, color)
         point+= 2
-        
+
 def add_edge( matrix, x0, y0, z0, x1, y1, z1 ):
     add_point(matrix, x0, y0, z0)
     add_point(matrix, x1, y1, z1)
-    
+
 def add_point( matrix, x, y, z=0 ):
     matrix.append( [x, y, z, 1] )
-    
+
 
 
 
@@ -148,7 +157,7 @@ def draw_line( x0, y0, x1, y1, screen, color ):
     if ( abs(x1-x0) >= abs(y1 - y0) ):
 
         #octant 1
-        if A > 0:            
+        if A > 0:
             d = A + B/2
 
             while x < x1:
